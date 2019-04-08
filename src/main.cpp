@@ -7,19 +7,26 @@
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
 #endif
 
-VendingController vendingController(5,18,19);
-BluetoothSerial SerialBT;
-bool isDispensing = false;
+const uint8_t led = 4;
+const uint8_t pump_1 = 5;
+const uint8_t pump_2 = 18;
+const uint8_t pump_3 = 19;
 
+bool isDispensing = false;
 
 // setting PWM properties
 const int freq = 5000;
 const int ledChannel = 0;
 const int resolution = 8;
 
-uint8_t led = 4;
+VendingController vendingController(pump_1,pump_2,pump_3);
+BluetoothSerial SerialBT;
 
 
+
+
+
+//Split string 
 String getValue(String data, char separator, int index)
 {
     int found = 0;
@@ -36,7 +43,7 @@ String getValue(String data, char separator, int index)
     return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
-
+// Dispense the drink
 void dispense(int ml1, int ml2, int ml3){
     Serial.printf("Dispensing.. %d %d %d\n",ml1,ml2,ml3);
     vendingController.dispense(ml1,ml2,ml3);
@@ -117,12 +124,6 @@ void loop() {
     SerialBT.flush();
     doAction(in);
   }
-
-  // Serial.println(vendingController.getProgress());
-  //     Serial.printf("%d %d %d %d\n", vendingController.dispStopTime[0],vendingController.dispStopTime[1],vendingController.dispStopTime[2],vendingController.dispStartTime);
-  //     Serial.println(millis());
-
-
 
   vendingController.run();
 
